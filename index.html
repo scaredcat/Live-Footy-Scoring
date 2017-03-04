@@ -1,27 +1,65 @@
+<!DOCTYPE html>
 <html>
-	<head>
-		<title>Darwin AFL Scoring - DTS V4</title>	
-		<style>
-		#score 
-		{
-			position: relative;
-			top: 601px;
-			left: -730px;
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Darwin AFL Scoring - DTS V5</title>	
+
+	<style>
+		/*import the font to use for the scoring webpage*/
+		@font-face {
+			font-family: 'NewsGoth Cn BT';
+			src: local('NewsGoth Cn BT'), url('NEWGOTBC_0.TTF') format('truetype');
+			font-weight: bold;
 		}
-		.clockfonts A
-		{
-			font-family:NewsGoth Cn BT;
-			font-size:9pt;
+
+		/*change backgound to green for keying out on video output*/
+		body {
+			background-color: #0F0;
+			margin: 0;
+		}
+
+		/*set up the initial scoring area*/
+		#score {
+			font-family:'NewsGoth Cn BT';
+			font-weight: bold;
+			background-image: url('score-background.png');
+			width: 385px;
+			height: 46px;
+			border-collapse: collapse;
+		}
+
+		/*all cells in the score table should have no padding*/
+		#score td {
+			padding-top: 0;
+			padding-bottom: 0;
+		}
+
+		/*font used for displaying the time and qt/ht/3q/ft */
+		.score-time {
+			font-size:18pt;
 			line-height:22px;
-			font-weight:bold;
 			color:white;
-			margin: 0;	
-			padding: 0;
-			display: block;
+			width: 55px; /*width of the first section of the score widget*/
 		}
+
+		/*font used to display the numbers on the score widget*/
+		.score-number {
+			font-size: 18px;
+			width: 38px; /* width available for each number on the scoreboard */
+			padding-left: 7px; /*space between the numbers on the scoreboard */
+		}
+
+
+
+
+
+
+
+
 		.clockfonts2 A
 		{
-			font-family:NewsGoth Cn BT;
+			font-family:'NewsGoth Cn BT';
 			font-size:9pt;
 			line-height:22px;
 			font-weight:bold;
@@ -30,9 +68,10 @@
 			padding: 0;
 			display: block;
 		}
-		.Anamefonts A
+		
+		.Hnamefonts A, .Anamefonts A
 		{
-			font-family:NewsGoth Cn BT;
+			font-family:'NewsGoth Cn BT';
 			font-size:18pt;
 			line-height:22px;
 			font-weight:bold;
@@ -41,82 +80,97 @@
 			padding: 0;
 			display: block;
 		}
-		.Hnamefonts A
-		{
-			font-family:NewsGoth Cn BT;
-			font-size:18pt;
-			line-height:22px;
-			font-weight:bold;
-			color:white;
-			margin: 0;	
-			padding: 0;
-			display: block;
-		}
-		.Qnamefonts A
-		{
-			font-family:NewsGoth Cn BT;
-			font-size:18pt;
-			line-height:22px;
-			font-weight:bold;
-			color:white;
-			margin: 0;	
-			padding: 0;
-			display: block;
-		}
-		.numfonts A
-		{
-			font-family:NewsGoth Cn BT;
-			font-size:18pt;
-			line-height:22px;
-			font-weight:bold;
-			color:black;	
-			margin: 0;	
-			padding: 0;
-			display: block;
-		}
-		.hidden A
-		{
-	font-family: lucida console;
-	font-size: 36pt;
-	color: #00FF00;
-		}
-		.hiddenB A
-		{
-			font-family:lucida console;
-			font-size:24pt;
-			color:#000000;		
-		}
-	body {
-	background-image: url(FootballSCOREBackground.png);
-	background-color: #0F0;
-	background-repeat: no-repeat;
-}
-        td {
-	font-family: Arial, Helvetica, sans-serif;
-}
-        .Qnamefonts strong {
-	color: #FFF;
-	font-family: "NewsGoth Cn BT";
-	font-size: 18px;
-}
-        .numfonts strong {
-	color: #FFF;
-	font-family: "NewsGoth Cn BT";
-}
-        </style>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	</head>
-		<body leftmargin="0" topmargin="0" marginleft="0" margintop="0">
-<p>
-  <script type="text/javascript">
-document.body.style.cursor = 'none';
 
-var Hgoals = 0;
-var Hpoints = 0;
-var Hbehinds = 0;
-var Agoals = 0;
-var Apoints = 0;
-var Abehinds = 0;
+
+        td {
+			font-family: Arial, Helvetica, sans-serif;
+		}
+    </style>
+</head>
+<body>
+
+
+<table id="score">
+  <tr>
+    <td class="score-time" align="center" valign="bottom" id="quarter"><A name="quarter" id='quarter'></A></td>
+    <td valign="top" class="Hnamefonts"><A name="H" id='H'>HOME</A></td>
+    <td align="center" valign="top" class="score-number" id="home-goals">0</td>
+    <td align="center" valign="top" class="score-number" id="home-behinds">0</td>
+    <td align="center" valign="top" class="score-number" id="home-points">0</td>
+  </tr>
+  <tr>
+    <td class="score-time" align="center" valign="middle"><A name="clock" id="clock">00:00</A></td>
+    <td valign="bottom" class="Anamefonts"><A name="A" id='A'>AWAY</A></td>
+    <td align="center" valign="bottom" class="score-number" id="away-goals">0</td>
+
+    <td align="center" valign="bottom" class="score-number" id="away-behinds">0</td>
+    <td align="center" valign="bottom" class="score-number" id="away-points">0</td>
+  </tr>
+</table>
+
+
+
+
+
+
+<table><tr><td>
+<input type="button" onClick="doHgoals('inc')" value="+ Home Goal"/>
+<input type="button" onClick="doHbehinds('inc')" value="+ Home Behind"/>
+<input type="button" onClick="doAgoals('inc')" value="+ Away Goal"/>
+<input type="button" onClick="doAbehinds('inc')" value="+ Away Behind"/>
+<input type="button" onClick="clockon()" value="Time"/>
+<input type="button" onClick="q1timeon()" value="1st Q start"/>
+<input type="button" onClick="q2timeon()" value="2nd Q start"/>
+<input type="button" onClick="q3timeon()" value="3rd Q start"/>
+<input type="button" onClick="q4timeon()" value="4th Q start"/>
+</td></tr>
+<tr><td>
+<input type="button" id="HG" onClick="doHgoals('dec')" value="- Home Goal"/>
+<input type="button" id="HB" onClick="doHbehinds('dec')" value="- Home Behind"/>
+<input type="button" id="AG" onClick="doAgoals('dec')" value="- Away Goal"/>
+<input type="button" id="AB" onClick="doAbehinds('dec')" value="- Away Behind"/>
+<input type="button" onClick="clockoff()" value="Zero Clock"/>
+<input type="button" onClick="q1timeoff()" value="1st Q stop"/>
+<input type="button" onClick="q2timeoff()" value="2nd Q stop"/>
+<input type="button" onClick="q3timeoff()" value="3rd Q stop"/>
+<input type="button" onClick="q4timeoff()" value="4th Q stop"/>
+</td></tr></table>
+<table border="1" bgcolor="black" class="clockfonts2">
+<tr>
+	<td>
+		<A id="home">Home</A>
+		<input type='text' id='homename' value="" maxlength="13" />
+		<input type='button' onclick='dohomename()' value='OK'/>
+	</td>
+	<td>
+		<A id="away">Away</A>
+		<input type='text' id='awayname' value="" maxlength="13" />
+		<input type='button' onclick='doawayname()' value='OK'/>
+	</td>
+	<td>
+		<A id="away">Alt-F4 to exit</A>
+		<!--<input type='text' maxlength="2" id='qmax' value="" size="2" />
+		<input type='button' onclick='setqmax()' value='OK'/>-->
+	</td>
+</tr>
+</table>
+
+<script type="text/javascript">
+// document.body.style.cursor = 'none'; // set the cursor to be hidden on the page
+
+
+var score = {
+	'home': {
+		'goals': 0,
+		'points': 0,
+		'behinds': 0
+	},
+	'away': {
+		'goals': 0,
+		'points': 0,
+		'behinds': 0
+	}
+}
 
 var clock_on = 0;
 var to;
@@ -334,48 +388,48 @@ function q4timeoff()
 function doHgoals(x)
 {
 	if (x == "inc"){
-		Hgoals++;
-	}else if (x == "dec" && Hgoals != 0){
-		Hgoals--;
+		score.home.goals++;
+	}else if (x == "dec" && score.home.goals != 0){
+		score.home.goals--;
 	}
-	Hpoints = Hbehinds + (Hgoals*6);
-	document.getElementById('Hgoals').innerHTML = Hgoals ;
-	document.getElementById('Hpoints').innerHTML = Hpoints ;
+	score.home.points = score.home.behinds + (score.home.goals*6);
+	document.getElementById('home-goals').innerHTML = score.home.goals ;
+	document.getElementById('home-points').innerHTML = score.home.points ;
 	
 	
 }
 function doHbehinds(x)
 {
 	if (x == "inc"){
-		Hbehinds++;
-	}else if (x == "dec" && Hbehinds != 0){
-		Hbehinds--;
+		score.home.behinds++;
+	}else if (x == "dec" && score.home.behinds != 0){
+		score.home.behinds--;
 	}
-	Hpoints = Hbehinds + (Hgoals*6);
-	document.getElementById('Hbehinds').innerHTML = Hbehinds ;
-	document.getElementById('Hpoints').innerHTML = Hpoints ;
+	score.home.points = score.home.behinds + (score.home.goals*6);
+	document.getElementById('home-behinds').innerHTML = score.home.behinds ;
+	document.getElementById('home-points').innerHTML = score.home.points ;
 }
 function doAgoals(x)
 {
 	if (x == "inc"){
-		Agoals++;
-	}else if (x == "dec" && Agoals != 0){
-		Agoals--;
+		score.away.goals++;
+	}else if (x == "dec" && score.away.goals != 0){
+		score.away.goals--;
 	}
-	Apoints = Abehinds + (Agoals*6);
-	document.getElementById('Agoals').innerHTML = Agoals ;
-	document.getElementById('Apoints').innerHTML = Apoints ;
+	score.away.points = score.away.behinds + (score.away.goals*6);
+	document.getElementById('away-goals').innerHTML = score.away.goals ;
+	document.getElementById('away-points').innerHTML = score.away.points ;
 }
 function doAbehinds(x)
 {
 	if (x == "inc"){
-		Abehinds++;
-	}else if (x == "dec" && Abehinds != 0){
-		Abehinds--;
+		score.away.behinds++;
+	}else if (x == "dec" && score.away.behinds != 0){
+		score.away.behinds--;
 	}
-	Apoints = Abehinds + (Agoals*6);
-	document.getElementById('Abehinds').innerHTML = Abehinds ;
-	document.getElementById('Apoints').innerHTML = Apoints ;
+	score.away.points = score.away.behinds + (score.away.goals*6);
+	document.getElementById('away-behinds').innerHTML = score.away.behinds ;
+	document.getElementById('away-points').innerHTML = score.away.points ;
 }
 function dohomename()
 {
@@ -387,124 +441,6 @@ function doawayname()
 	var an = document.getElementById('awayname').value;
 	document.getElementById('A').innerHTML = an;
 }
-</script></p>
-<table id="score" width="1220" border="0" align="left" cellpadding="0" cellspacing="0">
-  <tr>
-    <td width="791" height="38">&nbsp;</td>
-    <td width="66" height="38" class="Qnamefonts">&nbsp;</td>
-    <td class="Hnamefonts">&nbsp;</td>
-    <td width="195" height="38" class="Hnamefonts">&nbsp;</td>
-    <td width="49" height="38" align="center" valign="middle" bgcolor="transparent" class="Qnamefonts">&nbsp;</td>
-    <td width="49" height="38" align="center" valign="middle" bgcolor="transparent" class="numfonts">&nbsp;</td>
-    <td width="53" height="38" align="center" valign="middle" bgcolor="transparent" class="numfonts">&nbsp;</td>
-  </tr>
-  <tr>
-    <td width="791" height="22">&nbsp;</td>
-    <td width="66" height="20" align="center" valign="bottom" bgcolor="transparent" class="Qnamefonts"><A name="quarter" id='quarter'></A></td>
-    <td width="17" bgcolor="transparent" class="Hnamefonts">&nbsp;</td>
-    <td height="22" valign="top" bgcolor="transparent" class="Hnamefonts"><A name="H" id='H'>HOME</A></td>
-    <td width="49" height="22" align="center" valign="top" bgcolor="transparent" class="numfonts"><A id="Hgoals">0</A></td>
-    <td width="49" height="22" align="center" valign="top" bgcolor="transparent" class="numfonts"><A id="Hbehinds">0</A></td>
-    <td width="53" height="22" align="center" valign="top" bgcolor="transparent" class="numfonts"><A id="Hpoints">0</A></td>
-  </tr>
-  <tr>
-    <td width="791" height="24">&nbsp;</td>
-    <td width="66" height="20" align="center" valign="middle" bgcolor="transparent" class="Qnamefonts"><A name="clock" id="clock">00:00</A></td>
-    <td width="17" bgcolor="transparent" class="Anamefonts">&nbsp;</td>
-    <td height="22" valign="bottom" bgcolor="transparent" class="Anamefonts"><A name="A" id='A'>AWAY</A></td>
-    <td width="49" height="22" align="center" valign="bottom" bgcolor="transparent" class="numfonts"><A id="Agoals">0</A></td>
-
-    <td width="49" height="22" align="center" valign="bottom" bgcolor="transparent" class="numfonts"><A id="Abehinds">0</A></td>
-    <td width="53" height="22" align="center" valign="bottom" bgcolor="transparent" class="numfonts"><A id="Apoints">0</A></td>
-  </tr>
-</table>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<table width="446" height="200">
-	<tr><td>
-		<table width="444" height="50" class="hidden" style="table-layout:fixed">
-	<tr>
-		<td height="18"><A id='H'>HOME TEAM</A></td>
-	</tr>
-	</td>
-</table>
-	</tr>
-	<tr>
-		<td>
-		<table width="444" height="50" class="hidden" style="table-layout:fixed">
-		<tr>
-		<td align="left" valign="top"><A id="Hgoals">0</A></td>
-		<td align="left" valign="top"><A id="Hbehinds">0</A></td>
-		<td align="left" valign="top"><A id="Hpoints">0</A></td>
-		</tr>
-		</table>
-		</td>
-	</tr>
-	<tr><td>
-		<table width="444" height="50" class="hidden" style="table-layout:fixed">
-	<tr>
-		<td height="18"><A id='A'>AWAY TEAM</A></td>
-	</tr>
-	</td>
-</table>
-	</tr>
-	<tr>
-		<td>
-		<table width="444" height="50" class="hidden" style="table-layout:fixed">
-		<tr>
-		<td align="left" valign="top"><A id="Agoals">0</A></td>
-		<td align="left" valign="top"><A id="Abehinds">0</A></td>
-		<td align="left" valign="top"><A id="Apoints">0</A></td>
-		</tr>
-		</table>
-		</td>
-	</tr>
-</table>
-		</td>
-		</tr>
-</table>
-<table><tr><td>
-<input type="button" onClick="doHgoals('inc')" value="+ Home Goal"/>
-<input type="button" onClick="doHbehinds('inc')" value="+ Home Behind"/>
-<input type="button" onClick="doAgoals('inc')" value="+ Away Goal"/>
-<input type="button" onClick="doAbehinds('inc')" value="+ Away Behind"/>
-<input type="button" onClick="clockon()" value="Time"/>
-<input type="button" onClick="q1timeon()" value="1st Q start"/>
-<input type="button" onClick="q2timeon()" value="2nd Q start"/>
-<input type="button" onClick="q3timeon()" value="3rd Q start"/>
-<input type="button" onClick="q4timeon()" value="4th Q start"/>
-</td></tr>
-<tr><td>
-<input type="button" id="HG" onClick="doHgoals('dec')" value="- Home Goal"/>
-<input type="button" id="HB" onClick="doHbehinds('dec')" value="- Home Behind"/>
-<input type="button" id="AG" onClick="doAgoals('dec')" value="- Away Goal"/>
-<input type="button" id="AB" onClick="doAbehinds('dec')" value="- Away Behind"/>
-<input type="button" onClick="clockoff()" value="Zero Clock"/>
-<input type="button" onClick="q1timeoff()" value="1st Q stop"/>
-<input type="button" onClick="q2timeoff()" value="2nd Q stop"/>
-<input type="button" onClick="q3timeoff()" value="3rd Q stop"/>
-<input type="button" onClick="q4timeoff()" value="4th Q stop"/>-->
-</td></tr></table>
-<table border="1" bgcolor="black" class="clockfonts2">
-<tr>
-	<td>
-		<A id="home">Home</A>
-		<input type='text' id='homename' value="" maxlength="13" />
-		<input type='button' onclick='dohomename()' value='OK'/>
-	</td>
-	<td>
-		<A id="away">Away</A>
-		<input type='text' id='awayname' value="" maxlength="13" />
-		<input type='button' onclick='doawayname()' value='OK'/>
-	</td>
-	<td>
-		<A id="away">Alt-F4 to exit</A>
-		<!--<input type='text' maxlength="2" id='qmax' value="" size="2" />
-		<input type='button' onclick='setqmax()' value='OK'/>-->
-	</td>-->
-</tr>
-</table>
-	</body>
+</script>
+</body>
 </html>
