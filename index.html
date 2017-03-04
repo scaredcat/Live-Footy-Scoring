@@ -21,34 +21,43 @@
 
 		/*set up the initial scoring area*/
 		#score {
-			font-family:'NewsGoth Cn BT';
-			font-weight: bold;
+			font-size: 18pt;
+			line-height:22px;
 			background-image: url('score-background.png');
-			width: 385px;
-			height: 46px;
+			width: 385px; /*width of the background image*/
+			height: 46px; /*height of the background image*/
 			border-collapse: collapse;
 		}
 
 		/*all cells in the score table should have no padding*/
 		#score td {
+			font-family:'NewsGoth Cn BT';
+			font-weight: bold;
 			padding-top: 0;
 			padding-bottom: 0;
 		}
 
 		/*font used for displaying the time and qt/ht/3q/ft */
 		.score-time {
-			font-size:18pt;
-			line-height:22px;
 			color:white;
 			width: 55px; /*width of the first section of the score widget*/
+			text-align: center;
 		}
 
 		/*font used to display the numbers on the score widget*/
 		.score-number {
-			font-size: 18px;
 			width: 38px; /* width available for each number on the scoreboard */
 			padding-left: 7px; /*space between the numbers on the scoreboard */
+			text-align: center;
 		}
+
+		.team-name {
+			width: 185px;
+			color: white;
+			padding-left: 9px;
+		}
+
+
 
 
 
@@ -68,23 +77,6 @@
 			padding: 0;
 			display: block;
 		}
-		
-		.Hnamefonts A, .Anamefonts A
-		{
-			font-family:'NewsGoth Cn BT';
-			font-size:18pt;
-			line-height:22px;
-			font-weight:bold;
-			color:white;
-			margin: 0;	
-			padding: 0;
-			display: block;
-		}
-
-
-        td {
-			font-family: Arial, Helvetica, sans-serif;
-		}
     </style>
 </head>
 <body>
@@ -92,19 +84,18 @@
 
 <table id="score">
   <tr>
-    <td class="score-time" align="center" valign="bottom" id="quarter"><A name="quarter" id='quarter'></A></td>
-    <td valign="top" class="Hnamefonts"><A name="H" id='H'>HOME</A></td>
-    <td align="center" valign="top" class="score-number" id="home-goals">0</td>
-    <td align="center" valign="top" class="score-number" id="home-behinds">0</td>
-    <td align="center" valign="top" class="score-number" id="home-points">0</td>
+    <td class="score-time" align="center" id="quarter"></td>
+    <td class="team-name" id="home">HOME</td>
+    <td class="score-number" id="home-goals">0</td>
+    <td class="score-number" id="home-behinds">0</td>
+    <td class="score-number" id="home-points">0</td>
   </tr>
   <tr>
-    <td class="score-time" align="center" valign="middle"><A name="clock" id="clock">00:00</A></td>
-    <td valign="bottom" class="Anamefonts"><A name="A" id='A'>AWAY</A></td>
-    <td align="center" valign="bottom" class="score-number" id="away-goals">0</td>
-
-    <td align="center" valign="bottom" class="score-number" id="away-behinds">0</td>
-    <td align="center" valign="bottom" class="score-number" id="away-points">0</td>
+    <td class="score-time" id="clock">00:00</td>
+    <td class="team-name" id="away">AWAY</td>
+    <td class="score-number" id="away-goals">0</td>
+    <td class="score-number" id="away-behinds">0</td>
+    <td class="score-number" id="away-points">0</td>
   </tr>
 </table>
 
@@ -118,7 +109,7 @@
 <input type="button" onClick="doHbehinds('inc')" value="+ Home Behind"/>
 <input type="button" onClick="doAgoals('inc')" value="+ Away Goal"/>
 <input type="button" onClick="doAbehinds('inc')" value="+ Away Behind"/>
-<input type="button" onClick="clockon()" value="Time"/>
+<input type="button" id='view-clock' onClick="clock()" value="Time"/>
 <input type="button" onClick="q1timeon()" value="1st Q start"/>
 <input type="button" onClick="q2timeon()" value="2nd Q start"/>
 <input type="button" onClick="q3timeon()" value="3rd Q start"/>
@@ -149,8 +140,6 @@
 	</td>
 	<td>
 		<A id="away">Alt-F4 to exit</A>
-		<!--<input type='text' maxlength="2" id='qmax' value="" size="2" />
-		<input type='button' onclick='setqmax()' value='OK'/>-->
 	</td>
 </tr>
 </table>
@@ -172,7 +161,12 @@ var score = {
 	}
 }
 
-var clock_on = 0;
+var runDisplayTime = null;
+
+
+
+
+
 var to;
 
 var q1_on = 0;
@@ -192,38 +186,27 @@ var q4_mins = 0;
 var q4_secs = 0;
 var q4_to;
 
-var qmax;
-
-function clock()
-{
+var displayTime = function() {
 	var currentTime = new Date();
-	var hours = currentTime.getHours();
-	var mins = currentTime.getMinutes();
-	var secs = currentTime.getSeconds();
-		
-	if (mins < 10){
-		mins = "0" + mins;
-	}
-	if (secs < 10){
-		secs = "0" + secs;
-	}
-	<!--hours = hours - 12;-->
-	document.getElementById('clock').innerHTML = (hours + ":" + mins);
-	to = setTimeout("clock()",1000);
+	var timeString = currentTime.toLocaleTimeString('en-GB').slice(0,5); // get the hours and minutes part
+	document.getElementById('clock').innerHTML = timeString;
 }
-function clockon()
-{
-	if (!clock_on){
-		clock_on = 1;
-		clock();
+
+function clock() {
+	if(runDisplayTime === null) {
+		displayTime();
+		runDisplayTime = setInterval(displayTime, 1000);
+		document.getElementById('view-clock').disabled = true;
 	}
-	clearTimeout(q1_to);
-	q1_on = 0;
 }
-function clockoff()
-{
-	clearTimeout(to);
-	clock_on = 0;
+
+
+
+function clockoff() {
+	clearInterval(runDisplayTime);
+	runDisplayTime = null;
+	document.getElementById('view-clock').disabled = false;
+
 	clearTimeout(q1_to);
 	q1_on = 0;
 	q1_mins = 0;
@@ -234,20 +217,10 @@ function clockoff()
 	q3_secs = 0;
 	q4_secs = 0;
 	q4_mins = 0;
-	document.getElementById('clock').innerHTML = ("0:00");
+	document.getElementById('clock').innerHTML = '0:00';
 }
-function setqmax()
-{	
-	var qmax = document.getElementById('qmax').value;
-	if (isNaN(qmax)==true){
-		
-		alert("Please enter a number between 0 and 99");
-		return 0;
-	}
-	else
-	document.getElementById('clock').innerHTML = (qmax + ":" + "00");
-	q2_mins = qmax - 1;
-}
+
+
 function q1time()
 {
 	clearTimeout(to);
@@ -281,6 +254,10 @@ function q1timeoff()
 	document.getElementById('clock').innerHTML = (q1_mins + ":" + q1_secs);
 	document.getElementById('quarter').innerHTML = ("QT");
 }
+
+
+
+
 function q2time()
 {
 	clearTimeout(to);
@@ -314,6 +291,11 @@ function q2timeoff()
 	document.getElementById('clock').innerHTML = (q2_mins + ":" + q2_secs);
 	document.getElementById('quarter').innerHTML = ("HT");
 }
+
+
+
+
+
 function q3time()
 {
 	clearTimeout(to);
@@ -348,6 +330,10 @@ function q3timeoff()
 	document.getElementById('clock').innerHTML = (q3_mins + ":" + q3_secs);
 	document.getElementById('quarter').innerHTML = ("3Q");
 }
+
+
+
+
 function q4time()
 {
 	clearTimeout(to);
@@ -385,6 +371,11 @@ function q4timeoff()
 	document.getElementById('clock').innerHTML = (q4_mins + ":" + q4_secs);
 	document.getElementById('quarter').innerHTML = ("FT");
 }
+
+
+
+
+
 function doHgoals(x)
 {
 	if (x == "inc"){
@@ -431,15 +422,19 @@ function doAbehinds(x)
 	document.getElementById('away-behinds').innerHTML = score.away.behinds ;
 	document.getElementById('away-points').innerHTML = score.away.points ;
 }
+
+
+
+
 function dohomename()
 {
 	var hn = document.getElementById('homename').value;
-	document.getElementById('H').innerHTML = hn;
+	document.getElementById('home').innerHTML = hn;
 }
 function doawayname()
 {
 	var an = document.getElementById('awayname').value;
-	document.getElementById('A').innerHTML = an;
+	document.getElementById('away').innerHTML = an;
 }
 </script>
 </body>
