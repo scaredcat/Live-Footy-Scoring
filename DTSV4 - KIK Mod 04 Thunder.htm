@@ -1,0 +1,510 @@
+<html>
+	<head>
+		<title>Darwin AFL Scoring - DTS V4</title>	
+		<style>
+		#score 
+		{
+			position: relative;
+			top: 601px;
+			left: -730px;
+		}
+		.clockfonts A
+		{
+			font-family:NewsGoth Cn BT;
+			font-size:9pt;
+			line-height:22px;
+			font-weight:bold;
+			color:white;
+			margin: 0;	
+			padding: 0;
+			display: block;
+		}
+		.clockfonts2 A
+		{
+			font-family:NewsGoth Cn BT;
+			font-size:9pt;
+			line-height:22px;
+			font-weight:bold;
+			color:white;
+			margin: 0;	
+			padding: 0;
+			display: block;
+		}
+		.Anamefonts A
+		{
+			font-family:NewsGoth Cn BT;
+			font-size:18pt;
+			line-height:22px;
+			font-weight:bold;
+			color:white;
+			margin: 0;	
+			padding: 0;
+			display: block;
+		}
+		.Hnamefonts A
+		{
+			font-family:NewsGoth Cn BT;
+			font-size:18pt;
+			line-height:22px;
+			font-weight:bold;
+			color:white;
+			margin: 0;	
+			padding: 0;
+			display: block;
+		}
+		.Qnamefonts A
+		{
+			font-family:NewsGoth Cn BT;
+			font-size:18pt;
+			line-height:22px;
+			font-weight:bold;
+			color:white;
+			margin: 0;	
+			padding: 0;
+			display: block;
+		}
+		.numfonts A
+		{
+			font-family:NewsGoth Cn BT;
+			font-size:18pt;
+			line-height:22px;
+			font-weight:bold;
+			color:black;	
+			margin: 0;	
+			padding: 0;
+			display: block;
+		}
+		.hidden A
+		{
+	font-family: lucida console;
+	font-size: 36pt;
+	color: #00FF00;
+		}
+		.hiddenB A
+		{
+			font-family:lucida console;
+			font-size:24pt;
+			color:#000000;		
+		}
+	body {
+	background-image: url(FootballSCOREBackground.png);
+	background-color: #0F0;
+	background-repeat: no-repeat;
+}
+        td {
+	font-family: Arial, Helvetica, sans-serif;
+}
+        .Qnamefonts strong {
+	color: #FFF;
+	font-family: "NewsGoth Cn BT";
+	font-size: 18px;
+}
+        .numfonts strong {
+	color: #FFF;
+	font-family: "NewsGoth Cn BT";
+}
+        </style>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	</head>
+		<body leftmargin="0" topmargin="0" marginleft="0" margintop="0">
+<p>
+  <script type="text/javascript">
+document.body.style.cursor = 'none';
+
+var Hgoals = 0;
+var Hpoints = 0;
+var Hbehinds = 0;
+var Agoals = 0;
+var Apoints = 0;
+var Abehinds = 0;
+
+var clock_on = 0;
+var to;
+
+var q1_on = 0;
+var q1_mins = 0;
+var q1_secs = 0;
+var q1_to;
+var q2_on = 0;
+var q2_mins = 0;
+var q2_secs = 0;
+var q2_to;
+var q3_on = 0;
+var q3_mins = 0;
+var q3_secs = 0;
+var q3_to;
+var q4_on = 0;
+var q4_mins = 0;
+var q4_secs = 0;
+var q4_to;
+
+var qmax;
+
+function clock()
+{
+	var currentTime = new Date();
+	var hours = currentTime.getHours();
+	var mins = currentTime.getMinutes();
+	var secs = currentTime.getSeconds();
+		
+	if (mins < 10){
+		mins = "0" + mins;
+	}
+	if (secs < 10){
+		secs = "0" + secs;
+	}
+	<!--hours = hours - 12;-->
+	document.getElementById('clock').innerHTML = (hours + ":" + mins);
+	to = setTimeout("clock()",1000);
+}
+function clockon()
+{
+	if (!clock_on){
+		clock_on = 1;
+		clock();
+	}
+	clearTimeout(q1_to);
+	q1_on = 0;
+}
+function clockoff()
+{
+	clearTimeout(to);
+	clock_on = 0;
+	clearTimeout(q1_to);
+	q1_on = 0;
+	q1_mins = 0;
+	q1_secs = 0;
+	q2_secs = 0;
+	q2_mins = 0;
+	q3_mins = 0;
+	q3_secs = 0;
+	q4_secs = 0;
+	q4_mins = 0;
+	document.getElementById('clock').innerHTML = ("0:00");
+}
+function setqmax()
+{	
+	var qmax = document.getElementById('qmax').value;
+	if (isNaN(qmax)==true){
+		
+		alert("Please enter a number between 0 and 99");
+		return 0;
+	}
+	else
+	document.getElementById('clock').innerHTML = (qmax + ":" + "00");
+	q2_mins = qmax - 1;
+}
+function q1time()
+{
+	clearTimeout(to);
+	clock_on = 0;
+	document.getElementById('clock').innerHTML = ("");
+	q1_secs++;
+	
+	if (q1_secs < 10){
+		q1_secs = "0" + q1_secs;
+	}
+
+	if (q1_secs == 60){
+		q1_mins = q1_mins + 1;
+		q1_secs = "00";
+		}	
+	document.getElementById('clock').innerHTML = (q1_mins + ":" + q1_secs);
+	q1_to = setTimeout("q1time()",997);
+}
+function q1timeon()
+{
+	if (!q1_on){
+		q1_on = 1;
+		document.getElementById('quarter').innerHTML = ("1ST");
+		setTimeout("q1time()",997);
+		}	
+}
+function q1timeoff()
+{
+	clearTimeout(q1_to);
+	q1_on = 0;
+	document.getElementById('clock').innerHTML = (q1_mins + ":" + q1_secs);
+	document.getElementById('quarter').innerHTML = ("QT");
+}
+function q2time()
+{
+	clearTimeout(to);
+	clock_on = 0;
+	document.getElementById('clock').innerHTML = ("");
+	q2_secs++;
+	
+	if (q2_secs < 10){
+		q2_secs = "0" + q2_secs;
+	}
+
+	if (q2_secs == 60){
+		q2_mins = q2_mins + 1;
+		q2_secs = "00";
+		}
+	document.getElementById('clock').innerHTML = (q2_mins + ":" + q2_secs);
+	q2_to = setTimeout("q2time()",997);
+}
+function q2timeon()
+{
+	if (!q2_on){
+		q2_on = 1;
+		document.getElementById('quarter').innerHTML = ("2ND");
+		setTimeout("q2time()",997);
+		}	
+}
+function q2timeoff()
+{
+	clearTimeout(q2_to);
+	q2_on = 0;
+	document.getElementById('clock').innerHTML = (q2_mins + ":" + q2_secs);
+	document.getElementById('quarter').innerHTML = ("HT");
+}
+function q3time()
+{
+	clearTimeout(to);
+	clock_on = 0;
+	document.getElementById('clock').innerHTML = ("");
+	q3_secs++;
+	
+	if (q3_secs < 10){
+		q3_secs = "0" + q3_secs;
+	}
+
+	if (q3_secs == 60){
+		q3_mins = q3_mins + 1;
+		q3_secs = "00";
+		}
+		document.getElementById('clock').innerHTML = (q3_mins + ":" + q3_secs);
+	q3_to = setTimeout("q3time()",997);
+	
+}
+function q3timeon()
+{
+	if (!q3_on){
+		q3_on = 1;
+		document.getElementById('quarter').innerHTML = ("3RD");
+		setTimeout("q3time()",997);
+		}	
+}
+function q3timeoff()
+{
+	clearTimeout(q3_to);
+	q3_on = 0;
+	document.getElementById('clock').innerHTML = (q3_mins + ":" + q3_secs);
+	document.getElementById('quarter').innerHTML = ("3Q");
+}
+function q4time()
+{
+	clearTimeout(to);
+	clock_on = 0;
+	document.getElementById('clock').innerHTML = ("");
+	q4_secs++;
+	
+	if (q4_secs < 10){
+		q4_secs = "0" + q4_secs;
+	}
+
+	if (q4_secs == 60){
+		q4_mins = q4_mins + 1;
+		q4_secs = "00";
+		}
+		
+	
+	
+	document.getElementById('clock').innerHTML = (q4_mins + ":" + q4_secs);
+	q4_to = setTimeout("q4time()",997);
+	
+}
+function q4timeon()
+{
+	if (!q4_on){
+		q4_on = 1;
+		document.getElementById('quarter').innerHTML = ("4TH");
+		setTimeout("q4time()",997);
+		}	
+}
+function q4timeoff()
+{
+	clearTimeout(q4_to);
+	q4_on = 0;
+	document.getElementById('clock').innerHTML = (q4_mins + ":" + q4_secs);
+	document.getElementById('quarter').innerHTML = ("FT");
+}
+function doHgoals(x)
+{
+	if (x == "inc"){
+		Hgoals++;
+	}else if (x == "dec" && Hgoals != 0){
+		Hgoals--;
+	}
+	Hpoints = Hbehinds + (Hgoals*6);
+	document.getElementById('Hgoals').innerHTML = Hgoals ;
+	document.getElementById('Hpoints').innerHTML = Hpoints ;
+	
+	
+}
+function doHbehinds(x)
+{
+	if (x == "inc"){
+		Hbehinds++;
+	}else if (x == "dec" && Hbehinds != 0){
+		Hbehinds--;
+	}
+	Hpoints = Hbehinds + (Hgoals*6);
+	document.getElementById('Hbehinds').innerHTML = Hbehinds ;
+	document.getElementById('Hpoints').innerHTML = Hpoints ;
+}
+function doAgoals(x)
+{
+	if (x == "inc"){
+		Agoals++;
+	}else if (x == "dec" && Agoals != 0){
+		Agoals--;
+	}
+	Apoints = Abehinds + (Agoals*6);
+	document.getElementById('Agoals').innerHTML = Agoals ;
+	document.getElementById('Apoints').innerHTML = Apoints ;
+}
+function doAbehinds(x)
+{
+	if (x == "inc"){
+		Abehinds++;
+	}else if (x == "dec" && Abehinds != 0){
+		Abehinds--;
+	}
+	Apoints = Abehinds + (Agoals*6);
+	document.getElementById('Abehinds').innerHTML = Abehinds ;
+	document.getElementById('Apoints').innerHTML = Apoints ;
+}
+function dohomename()
+{
+	var hn = document.getElementById('homename').value;
+	document.getElementById('H').innerHTML = hn;
+}
+function doawayname()
+{
+	var an = document.getElementById('awayname').value;
+	document.getElementById('A').innerHTML = an;
+}
+</script></p>
+<table id="score" width="1220" border="0" align="left" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="791" height="38">&nbsp;</td>
+    <td width="66" height="38" class="Qnamefonts">&nbsp;</td>
+    <td class="Hnamefonts">&nbsp;</td>
+    <td width="195" height="38" class="Hnamefonts">&nbsp;</td>
+    <td width="49" height="38" align="center" valign="middle" bgcolor="transparent" class="Qnamefonts">&nbsp;</td>
+    <td width="49" height="38" align="center" valign="middle" bgcolor="transparent" class="numfonts">&nbsp;</td>
+    <td width="53" height="38" align="center" valign="middle" bgcolor="transparent" class="numfonts">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="791" height="22">&nbsp;</td>
+    <td width="66" height="20" align="center" valign="bottom" bgcolor="transparent" class="Qnamefonts"><A name="quarter" id='quarter'></A></td>
+    <td width="17" bgcolor="transparent" class="Hnamefonts">&nbsp;</td>
+    <td height="22" valign="top" bgcolor="transparent" class="Hnamefonts"><A name="H" id='H'>HOME</A></td>
+    <td width="49" height="22" align="center" valign="top" bgcolor="transparent" class="numfonts"><A id="Hgoals">0</A></td>
+    <td width="49" height="22" align="center" valign="top" bgcolor="transparent" class="numfonts"><A id="Hbehinds">0</A></td>
+    <td width="53" height="22" align="center" valign="top" bgcolor="transparent" class="numfonts"><A id="Hpoints">0</A></td>
+  </tr>
+  <tr>
+    <td width="791" height="24">&nbsp;</td>
+    <td width="66" height="20" align="center" valign="middle" bgcolor="transparent" class="Qnamefonts"><A name="clock" id="clock">00:00</A></td>
+    <td width="17" bgcolor="transparent" class="Anamefonts">&nbsp;</td>
+    <td height="22" valign="bottom" bgcolor="transparent" class="Anamefonts"><A name="A" id='A'>AWAY</A></td>
+    <td width="49" height="22" align="center" valign="bottom" bgcolor="transparent" class="numfonts"><A id="Agoals">0</A></td>
+
+    <td width="49" height="22" align="center" valign="bottom" bgcolor="transparent" class="numfonts"><A id="Abehinds">0</A></td>
+    <td width="53" height="22" align="center" valign="bottom" bgcolor="transparent" class="numfonts"><A id="Apoints">0</A></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<table width="446" height="200">
+	<tr><td>
+		<table width="444" height="50" class="hidden" style="table-layout:fixed">
+	<tr>
+		<td height="18"><A id='H'>HOME TEAM</A></td>
+	</tr>
+	</td>
+</table>
+	</tr>
+	<tr>
+		<td>
+		<table width="444" height="50" class="hidden" style="table-layout:fixed">
+		<tr>
+		<td align="left" valign="top"><A id="Hgoals">0</A></td>
+		<td align="left" valign="top"><A id="Hbehinds">0</A></td>
+		<td align="left" valign="top"><A id="Hpoints">0</A></td>
+		</tr>
+		</table>
+		</td>
+	</tr>
+	<tr><td>
+		<table width="444" height="50" class="hidden" style="table-layout:fixed">
+	<tr>
+		<td height="18"><A id='A'>AWAY TEAM</A></td>
+	</tr>
+	</td>
+</table>
+	</tr>
+	<tr>
+		<td>
+		<table width="444" height="50" class="hidden" style="table-layout:fixed">
+		<tr>
+		<td align="left" valign="top"><A id="Agoals">0</A></td>
+		<td align="left" valign="top"><A id="Abehinds">0</A></td>
+		<td align="left" valign="top"><A id="Apoints">0</A></td>
+		</tr>
+		</table>
+		</td>
+	</tr>
+</table>
+		</td>
+		</tr>
+</table>
+<table><tr><td>
+<input type="button" onClick="doHgoals('inc')" value="+ Home Goal"/>
+<input type="button" onClick="doHbehinds('inc')" value="+ Home Behind"/>
+<input type="button" onClick="doAgoals('inc')" value="+ Away Goal"/>
+<input type="button" onClick="doAbehinds('inc')" value="+ Away Behind"/>
+<input type="button" onClick="clockon()" value="Time"/>
+<input type="button" onClick="q1timeon()" value="1st Q start"/>
+<input type="button" onClick="q2timeon()" value="2nd Q start"/>
+<input type="button" onClick="q3timeon()" value="3rd Q start"/>
+<input type="button" onClick="q4timeon()" value="4th Q start"/>
+</td></tr>
+<tr><td>
+<input type="button" id="HG" onClick="doHgoals('dec')" value="- Home Goal"/>
+<input type="button" id="HB" onClick="doHbehinds('dec')" value="- Home Behind"/>
+<input type="button" id="AG" onClick="doAgoals('dec')" value="- Away Goal"/>
+<input type="button" id="AB" onClick="doAbehinds('dec')" value="- Away Behind"/>
+<input type="button" onClick="clockoff()" value="Zero Clock"/>
+<input type="button" onClick="q1timeoff()" value="1st Q stop"/>
+<input type="button" onClick="q2timeoff()" value="2nd Q stop"/>
+<input type="button" onClick="q3timeoff()" value="3rd Q stop"/>
+<input type="button" onClick="q4timeoff()" value="4th Q stop"/>-->
+</td></tr></table>
+<table border="1" bgcolor="black" class="clockfonts2">
+<tr>
+	<td>
+		<A id="home">Home</A>
+		<input type='text' id='homename' value="" maxlength="13" />
+		<input type='button' onclick='dohomename()' value='OK'/>
+	</td>
+	<td>
+		<A id="away">Away</A>
+		<input type='text' id='awayname' value="" maxlength="13" />
+		<input type='button' onclick='doawayname()' value='OK'/>
+	</td>
+	<td>
+		<A id="away">Alt-F4 to exit</A>
+		<!--<input type='text' maxlength="2" id='qmax' value="" size="2" />
+		<input type='button' onclick='setqmax()' value='OK'/>-->
+	</td>-->
+</tr>
+</table>
+	</body>
+</html>
