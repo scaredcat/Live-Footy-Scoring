@@ -55,6 +55,10 @@
 			left: 40px;
 		}
 
+		#score.small {
+			width: 293px; /*width of the background only showing the points*/
+		}
+
 		/*all cells in the score table should have no padding and make use of the newgoth font*/
 		#score td {
 			font-family:'NewsGoth Cn BT';
@@ -149,6 +153,9 @@ var score = {
 
 var gametime = [0, 0, 0, 0]; // stores the time of each quarter in seconds
 var currentQuarter = -1;
+var lastScoreTime = 0; // stores the time the last goal was made
+var smallDisplay = false; // whether or not the scoreboard should be small
+var totalScoreInterval = 10; // the interval between displaying the full scoreboard and the mini version
 
 // setInterval references
 var runDisplayTime = null;
@@ -214,6 +221,11 @@ function displayGameTime() {
 		seconds = '0' + seconds;
 	}
 
+	if(gametime[currentQuarter] - lastScoreTime > totalScoreInterval && !smallDisplay) {
+		smallDisplay = true;
+		displayScore();
+	}
+
 	document.getElementById('clock').innerHTML = minutes + ":" + seconds;
 }
 
@@ -240,6 +252,8 @@ function startGameTime(quarter) {
 function stopGameTime(quarter) {
 	clearInterval(runGameTime);
 	runGameTime = null;
+	smallDisplay = false;
+	displayScore();
 	displayQuarterStop(quarter);
 }
 
@@ -252,6 +266,8 @@ function stopGameTime(quarter) {
 function increaseScore(team, type) {
 	score[team][type]++;
 	score[team].points = score[team].behinds + (score[team].goals*6);
+	lastScoreTime = gametime[currentQuarter];
+	smallDisplay = false;
 	displayScore();
 }
 
@@ -275,15 +291,31 @@ function decreaseScore(team, type) {
 * This function takes the score values and displays them to the screen
 */
 function displayScore() {
+	if(smallDisplay === true) {
+		document.getElementById('home-goals').style.display = 'none';
+		document.getElementById('home-behinds').style.display = 'none';
+		document.getElementById('away-goals').style.display = 'none';
+		document.getElementById('away-behinds').style.display = 'none';
+		document.getElementById('score').style.backgroundImage = "url('score-background-small.png')";
+		document.getElementById('score').className = 'small';
+	} else {
+		document.getElementById('home-goals').style.display = 'table-cell';
+		document.getElementById('home-behinds').style.display = 'table-cell';
+		document.getElementById('away-goals').style.display = 'table-cell';
+		document.getElementById('away-behinds').style.display = 'table-cell';
+		document.getElementById('score').style.backgroundImage = "url('score-background.png')";
+		document.getElementById('score').className = '';
+	}
+
 	//show home team score
-	document.getElementById('home-goals').innerHTML = score.home.goals ;
-	document.getElementById('home-behinds').innerHTML = score.home.behinds ;
-	document.getElementById('home-points').innerHTML = score.home.points ;
+	document.getElementById('home-goals').innerHTML = score.home.goals;
+	document.getElementById('home-behinds').innerHTML = score.home.behinds;
+	document.getElementById('home-points').innerHTML = score.home.points;
 
 	// show away team score
-	document.getElementById('away-goals').innerHTML = score.away.goals ;
-	document.getElementById('away-behinds').innerHTML = score.away.behinds ;
-	document.getElementById('away-points').innerHTML = score.away.points ;
+	document.getElementById('away-goals').innerHTML = score.away.goals;
+	document.getElementById('away-behinds').innerHTML = score.away.behinds;
+	document.getElementById('away-points').innerHTML = score.away.points;
 }
 
 /**
@@ -294,7 +326,6 @@ function displayScore() {
 */
 function displayQuarterStart(quarter) {
 	//display text
-	console.log('diaplyquarter',quarter);
 	switch(quarter) {
 		case 0:
 			document.getElementById('quarter').innerHTML = "1ST"; break;
@@ -342,6 +373,9 @@ function displayQuarterStop(quarter) {
 	}
 }
 
+/**
+* This function toggles whether or not to display the logo on screen
+*/
 function toggleLogo() {
 	var element = document.getElementById('logo');
 
