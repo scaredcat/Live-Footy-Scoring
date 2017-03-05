@@ -32,6 +32,13 @@
 
 		}
 
+		#logo {
+			/*position of the logo*/
+			position: absolute;
+			top: 10px;
+			left: 600px;
+		}
+
 		/*set up the initial scoring area*/
 		#score {
 			font-size: 18pt;
@@ -97,6 +104,8 @@
   </tr>
 </table>
 
+<img id='logo' src='logo.png' alt='logo' style="display: none;" />
+
 <table id="controls"><tr><td>
 <input type="button" onClick="increaseScore('home', 'goals')" value="+ Home Goal"/>
 <input type="button" onClick="increaseScore('home', 'behinds')" value="+ Home Behind"/>
@@ -118,6 +127,9 @@
 <input type="button" id='stop-quarter2' onClick="stopGameTime(1)" value="2nd Q stop"/>
 <input type="button" id='stop-quarter3' onClick="stopGameTime(2)" value="3rd Q stop"/>
 <input type="button" id='stop-quarter4' onClick="stopGameTime(3)" value="4th Q stop"/>
+</td></tr>
+<tr><td>
+<input type="button" onClick="toggleLogo()" value="Toggle Logo" />
 </td></tr></table>
 
 <script type="text/javascript">
@@ -327,6 +339,16 @@ function displayQuarterStop(quarter) {
 	for(var i=1; i <= 4; i++) {
 		document.getElementById('start-quarter'+i).disabled = false;
 		document.getElementById('stop-quarter'+i).disabled = false;
+	}
+}
+
+function toggleLogo() {
+	var element = document.getElementById('logo');
+
+	if(element.style.display === 'none') {
+		element.style.display = 'block';
+	} else {
+		element.style.display = 'none';
 	}
 }
 </script>
