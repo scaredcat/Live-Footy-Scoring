@@ -237,6 +237,7 @@ function displayGameTime() {
 function startGameTime(quarter) {
 	if(runGameTime === null) {
 		currentQuarter = quarter;
+		lastScoreTime = gametime[quarter];
 		runGameTime = setInterval(displayGameTime, 1000);
 		clockOff();
 		displayQuarterStart(quarter);
