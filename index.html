@@ -4,7 +4,6 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Darwin AFL Scoring - DTS V5</title>	
-
 	<style>
 		/*import the font to use for the scoring webpage*/
 		@font-face {
@@ -13,10 +12,24 @@
 			font-weight: bold;
 		}
 
+		html, body{
+			height: 100%;
+		}
+
 		/*change backgound to green for keying out on video output*/
 		body {
 			background-color: #0F0;
 			margin: 0;
+			cursor: none; /*hide the cursor when it's not in the controls or scoreboard area*/
+		}
+
+		#controls {
+			cursor: default;
+
+			/*position of the controls*/
+			position: absolute;
+			top: 400px;
+
 		}
 
 		/*set up the initial scoring area*/
@@ -27,9 +40,15 @@
 			width: 385px; /*width of the background image*/
 			height: 46px; /*height of the background image*/
 			border-collapse: collapse;
+			cursor: default;
+
+			/*location of the scoreboard*/
+			position: absolute;
+			top: 600px;
+			left: 40px;
 		}
 
-		/*all cells in the score table should have no padding*/
+		/*all cells in the score table should have no padding and make use of the newgoth font*/
 		#score td {
 			font-family:'NewsGoth Cn BT';
 			font-weight: bold;
@@ -38,116 +57,71 @@
 		}
 
 		/*font used for displaying the time and qt/ht/3q/ft */
-		.score-time {
+		.time {
 			color:white;
 			width: 55px; /*width of the first section of the score widget*/
 			text-align: center;
 		}
 
 		/*font used to display the numbers on the score widget*/
-		.score-number {
+		.number {
 			width: 38px; /* width available for each number on the scoreboard */
 			padding-left: 7px; /*space between the numbers on the scoreboard */
 			text-align: center;
 		}
 
-		.team-name {
-			width: 185px;
+		/*font styling used for the team names*/
+		.team {
+			width: 185px; /*the width available for the team name*/
 			color: white;
-			padding-left: 9px;
-		}
-
-
-
-
-
-
-
-
-
-
-		.clockfonts2 A
-		{
-			font-family:'NewsGoth Cn BT';
-			font-size:9pt;
-			line-height:22px;
-			font-weight:bold;
-			color:white;
-			margin: 0;	
-			padding: 0;
-			display: block;
+			padding-left: 9px; /*space to the left of the team names*/
 		}
     </style>
 </head>
 <body>
 
-
 <table id="score">
   <tr>
-    <td class="score-time" align="center" id="quarter"></td>
-    <td class="team-name" id="home">HOME</td>
-    <td class="score-number" id="home-goals">0</td>
-    <td class="score-number" id="home-behinds">0</td>
-    <td class="score-number" id="home-points">0</td>
+    <td class="time" align="center" id="quarter"></td>
+    <td class="team" id="home" contenteditable="true">HOME</td>
+    <td class="number" id="home-goals">0</td>
+    <td class="number" id="home-behinds">0</td>
+    <td class="number" id="home-points">0</td>
   </tr>
   <tr>
-    <td class="score-time" id="clock">00:00</td>
-    <td class="team-name" id="away">AWAY</td>
-    <td class="score-number" id="away-goals">0</td>
-    <td class="score-number" id="away-behinds">0</td>
-    <td class="score-number" id="away-points">0</td>
+    <td class="time" id="clock">00:00</td>
+    <td class="team" id="away" contenteditable="true">AWAY</td>
+    <td class="number" id="away-goals">0</td>
+    <td class="number" id="away-behinds">0</td>
+    <td class="number" id="away-points">0</td>
   </tr>
 </table>
 
-
-
-
-
-
-<table><tr><td>
-<input type="button" onClick="doHgoals('inc')" value="+ Home Goal"/>
-<input type="button" onClick="doHbehinds('inc')" value="+ Home Behind"/>
-<input type="button" onClick="doAgoals('inc')" value="+ Away Goal"/>
-<input type="button" onClick="doAbehinds('inc')" value="+ Away Behind"/>
-<input type="button" id='view-clock' onClick="clock()" value="Time"/>
-<input type="button" onClick="q1timeon()" value="1st Q start"/>
-<input type="button" onClick="q2timeon()" value="2nd Q start"/>
-<input type="button" onClick="q3timeon()" value="3rd Q start"/>
-<input type="button" onClick="q4timeon()" value="4th Q start"/>
+<table id="controls"><tr><td>
+<input type="button" onClick="increaseScore('home', 'goals')" value="+ Home Goal"/>
+<input type="button" onClick="increaseScore('home', 'behinds')" value="+ Home Behind"/>
+<input type="button" onClick="increaseScore('away', 'goals')" value="+ Away Goal"/>
+<input type="button" onClick="increaseScore('away', 'behinds')" value="+ Away Behind"/>
+<input type="button" id='view-clock' onClick="clockOn()" value="Time"/>
+<input type="button" id='start-quarter1' onClick="startGameTime(0)" value="1st Q start"/>
+<input type="button" id='start-quarter2' onClick="startGameTime(1)" value="2nd Q start"/>
+<input type="button" id='start-quarter3' onClick="startGameTime(2)" value="3rd Q start"/>
+<input type="button" id='start-quarter4' onClick="startGameTime(3)" value="4th Q start"/>
 </td></tr>
 <tr><td>
-<input type="button" id="HG" onClick="doHgoals('dec')" value="- Home Goal"/>
-<input type="button" id="HB" onClick="doHbehinds('dec')" value="- Home Behind"/>
-<input type="button" id="AG" onClick="doAgoals('dec')" value="- Away Goal"/>
-<input type="button" id="AB" onClick="doAbehinds('dec')" value="- Away Behind"/>
-<input type="button" onClick="clockoff()" value="Zero Clock"/>
-<input type="button" onClick="q1timeoff()" value="1st Q stop"/>
-<input type="button" onClick="q2timeoff()" value="2nd Q stop"/>
-<input type="button" onClick="q3timeoff()" value="3rd Q stop"/>
-<input type="button" onClick="q4timeoff()" value="4th Q stop"/>
+<input type="button" onClick="decreaseScore('home', 'goals')" value="- Home Goal"/>
+<input type="button" onClick="decreaseScore('home', 'behinds')" value="- Home Behind"/>
+<input type="button" onClick="decreaseScore('away', 'goals')" value="- Away Goal"/>
+<input type="button" onClick="decreaseScore('away', 'behinds')" value="- Away Behind"/>
+<input type="button" onClick="zeroClock()" value="Zero Clock"/>
+<input type="button" id='stop-quarter1' onClick="stopGameTime(0)" value="1st Q stop"/>
+<input type="button" id='stop-quarter2' onClick="stopGameTime(1)" value="2nd Q stop"/>
+<input type="button" id='stop-quarter3' onClick="stopGameTime(2)" value="3rd Q stop"/>
+<input type="button" id='stop-quarter4' onClick="stopGameTime(3)" value="4th Q stop"/>
 </td></tr></table>
-<table border="1" bgcolor="black" class="clockfonts2">
-<tr>
-	<td>
-		<A id="home">Home</A>
-		<input type='text' id='homename' value="" maxlength="13" />
-		<input type='button' onclick='dohomename()' value='OK'/>
-	</td>
-	<td>
-		<A id="away">Away</A>
-		<input type='text' id='awayname' value="" maxlength="13" />
-		<input type='button' onclick='doawayname()' value='OK'/>
-	</td>
-	<td>
-		<A id="away">Alt-F4 to exit</A>
-	</td>
-</tr>
-</table>
 
 <script type="text/javascript">
-// document.body.style.cursor = 'none'; // set the cursor to be hidden on the page
-
-
+/*-----------------------------STORAGE FUNCTIONS-----------------------------------*/
 var score = {
 	'home': {
 		'goals': 0,
@@ -161,280 +135,199 @@ var score = {
 	}
 }
 
+var gametime = [0, 0, 0, 0]; // stores the time of each quarter in seconds
+var currentQuarter = -1;
+
+// setInterval references
 var runDisplayTime = null;
+var runGameTime = null;
 
 
+/*-----------------------------CONTROLLER FUNCTIONS-----------------------------------*/
 
-
-
-var to;
-
-var q1_on = 0;
-var q1_mins = 0;
-var q1_secs = 0;
-var q1_to;
-var q2_on = 0;
-var q2_mins = 0;
-var q2_secs = 0;
-var q2_to;
-var q3_on = 0;
-var q3_mins = 0;
-var q3_secs = 0;
-var q3_to;
-var q4_on = 0;
-var q4_mins = 0;
-var q4_secs = 0;
-var q4_to;
-
+/**
+* This function is called every second to display the current system time on the screen
+*/
 var displayTime = function() {
 	var currentTime = new Date();
 	var timeString = currentTime.toLocaleTimeString('en-GB').slice(0,5); // get the hours and minutes part
 	document.getElementById('clock').innerHTML = timeString;
 }
 
-function clock() {
+/**
+* This function is called to display the current time to the screen
+*/
+function clockOn() {
 	if(runDisplayTime === null) {
 		displayTime();
 		runDisplayTime = setInterval(displayTime, 1000);
+		document.getElementById('quarter').innerHTML = '';
 		document.getElementById('view-clock').disabled = true;
 	}
 }
 
-
-
-function clockoff() {
+/**
+* This function stops displaying the current time to the screen
+* replacing the current time with '0:00'
+*/
+function clockOff() {
 	clearInterval(runDisplayTime);
 	runDisplayTime = null;
 	document.getElementById('view-clock').disabled = false;
-
-	clearTimeout(q1_to);
-	q1_on = 0;
-	q1_mins = 0;
-	q1_secs = 0;
-	q2_secs = 0;
-	q2_mins = 0;
-	q3_mins = 0;
-	q3_secs = 0;
-	q4_secs = 0;
-	q4_mins = 0;
 	document.getElementById('clock').innerHTML = '0:00';
 }
 
+/**
+* This function erases the timings for all the quarters
+* and turns off the clock
+*/
+function zeroClock() {
+	clockOff();
+	gametime = [0,0,0,0];
+}
 
-function q1time()
-{
-	clearTimeout(to);
-	clock_on = 0;
-	document.getElementById('clock').innerHTML = ("");
-	q1_secs++;
-	
-	if (q1_secs < 10){
-		q1_secs = "0" + q1_secs;
+
+/**
+* This function displays the game time for the current quarter
+* it is called every second to add one second to the timer
+*/
+function displayGameTime() {
+	gametime[currentQuarter]++;
+
+	var minutes = Math.floor(gametime[currentQuarter]/60);
+	var seconds = gametime[currentQuarter] % 60;
+
+	// pad seconds
+	if(seconds < 10) {
+		seconds = '0' + seconds;
 	}
 
-	if (q1_secs == 60){
-		q1_mins = q1_mins + 1;
-		q1_secs = "00";
-		}	
-	document.getElementById('clock').innerHTML = (q1_mins + ":" + q1_secs);
-	q1_to = setTimeout("q1time()",997);
-}
-function q1timeon()
-{
-	if (!q1_on){
-		q1_on = 1;
-		document.getElementById('quarter').innerHTML = ("1ST");
-		setTimeout("q1time()",997);
-		}	
-}
-function q1timeoff()
-{
-	clearTimeout(q1_to);
-	q1_on = 0;
-	document.getElementById('clock').innerHTML = (q1_mins + ":" + q1_secs);
-	document.getElementById('quarter').innerHTML = ("QT");
+	document.getElementById('clock').innerHTML = minutes + ":" + seconds;
 }
 
-
-
-
-function q2time()
-{
-	clearTimeout(to);
-	clock_on = 0;
-	document.getElementById('clock').innerHTML = ("");
-	q2_secs++;
-	
-	if (q2_secs < 10){
-		q2_secs = "0" + q2_secs;
+/**
+* This funtion starts the game time for a specific quarter
+*
+* @param quarter 	the index of the quarter that is going to start (value 0-3)
+*/
+function startGameTime(quarter) {
+	if(runGameTime === null) {
+		currentQuarter = quarter;
+		runGameTime = setInterval(displayGameTime, 1000);
+		clockOff();
+		displayQuarterStart(quarter);
 	}
-
-	if (q2_secs == 60){
-		q2_mins = q2_mins + 1;
-		q2_secs = "00";
-		}
-	document.getElementById('clock').innerHTML = (q2_mins + ":" + q2_secs);
-	q2_to = setTimeout("q2time()",997);
-}
-function q2timeon()
-{
-	if (!q2_on){
-		q2_on = 1;
-		document.getElementById('quarter').innerHTML = ("2ND");
-		setTimeout("q2time()",997);
-		}	
-}
-function q2timeoff()
-{
-	clearTimeout(q2_to);
-	q2_on = 0;
-	document.getElementById('clock').innerHTML = (q2_mins + ":" + q2_secs);
-	document.getElementById('quarter').innerHTML = ("HT");
 }
 
 
+/**
+* This funtion stops the game time for a specific quarter
+*
+* @param quarter 	the index of the quarter that is going to stop (value 0-3)
+*/
+function stopGameTime(quarter) {
+	clearInterval(runGameTime);
+	runGameTime = null;
+	displayQuarterStop(quarter);
+}
 
+/**
+* This function increases the score for a specific team
+*
+* @param team	this can either be 'home' or 'away' depending on which team's score to increase
+* @param type 	this can be 'goals' or 'points' depending on what type of score to increase
+*/
+function increaseScore(team, type) {
+	score[team][type]++;
+	score[team].points = score[team].behinds + (score[team].goals*6);
+	displayScore();
+}
 
-
-function q3time()
-{
-	clearTimeout(to);
-	clock_on = 0;
-	document.getElementById('clock').innerHTML = ("");
-	q3_secs++;
-	
-	if (q3_secs < 10){
-		q3_secs = "0" + q3_secs;
+/**
+* This function decreases the score for a specific team
+*
+* @param team 	this can either be 'home' or 'away' depending on which team's score to decrease
+* @param type 	this can either be 'goals' or 'points' depending on what type of score to decrease
+*/
+function decreaseScore(team, type) {
+	if(score[team][type] != 0) {
+		score[team][type]--;
+		score[team].points = score[team].behinds + (score[team].goals*6);
+		displayScore();
 	}
-
-	if (q3_secs == 60){
-		q3_mins = q3_mins + 1;
-		q3_secs = "00";
-		}
-		document.getElementById('clock').innerHTML = (q3_mins + ":" + q3_secs);
-	q3_to = setTimeout("q3time()",997);
-	
-}
-function q3timeon()
-{
-	if (!q3_on){
-		q3_on = 1;
-		document.getElementById('quarter').innerHTML = ("3RD");
-		setTimeout("q3time()",997);
-		}	
-}
-function q3timeoff()
-{
-	clearTimeout(q3_to);
-	q3_on = 0;
-	document.getElementById('clock').innerHTML = (q3_mins + ":" + q3_secs);
-	document.getElementById('quarter').innerHTML = ("3Q");
 }
 
+/*-----------------------------DISPLAY FUNCTIONS-----------------------------------*/
 
-
-
-function q4time()
-{
-	clearTimeout(to);
-	clock_on = 0;
-	document.getElementById('clock').innerHTML = ("");
-	q4_secs++;
-	
-	if (q4_secs < 10){
-		q4_secs = "0" + q4_secs;
-	}
-
-	if (q4_secs == 60){
-		q4_mins = q4_mins + 1;
-		q4_secs = "00";
-		}
-		
-	
-	
-	document.getElementById('clock').innerHTML = (q4_mins + ":" + q4_secs);
-	q4_to = setTimeout("q4time()",997);
-	
-}
-function q4timeon()
-{
-	if (!q4_on){
-		q4_on = 1;
-		document.getElementById('quarter').innerHTML = ("4TH");
-		setTimeout("q4time()",997);
-		}	
-}
-function q4timeoff()
-{
-	clearTimeout(q4_to);
-	q4_on = 0;
-	document.getElementById('clock').innerHTML = (q4_mins + ":" + q4_secs);
-	document.getElementById('quarter').innerHTML = ("FT");
-}
-
-
-
-
-
-function doHgoals(x)
-{
-	if (x == "inc"){
-		score.home.goals++;
-	}else if (x == "dec" && score.home.goals != 0){
-		score.home.goals--;
-	}
-	score.home.points = score.home.behinds + (score.home.goals*6);
+/**
+* This function takes the score values and displays them to the screen
+*/
+function displayScore() {
+	//show home team score
 	document.getElementById('home-goals').innerHTML = score.home.goals ;
-	document.getElementById('home-points').innerHTML = score.home.points ;
-	
-	
-}
-function doHbehinds(x)
-{
-	if (x == "inc"){
-		score.home.behinds++;
-	}else if (x == "dec" && score.home.behinds != 0){
-		score.home.behinds--;
-	}
-	score.home.points = score.home.behinds + (score.home.goals*6);
 	document.getElementById('home-behinds').innerHTML = score.home.behinds ;
 	document.getElementById('home-points').innerHTML = score.home.points ;
-}
-function doAgoals(x)
-{
-	if (x == "inc"){
-		score.away.goals++;
-	}else if (x == "dec" && score.away.goals != 0){
-		score.away.goals--;
-	}
-	score.away.points = score.away.behinds + (score.away.goals*6);
+
+	// show away team score
 	document.getElementById('away-goals').innerHTML = score.away.goals ;
-	document.getElementById('away-points').innerHTML = score.away.points ;
-}
-function doAbehinds(x)
-{
-	if (x == "inc"){
-		score.away.behinds++;
-	}else if (x == "dec" && score.away.behinds != 0){
-		score.away.behinds--;
-	}
-	score.away.points = score.away.behinds + (score.away.goals*6);
 	document.getElementById('away-behinds').innerHTML = score.away.behinds ;
 	document.getElementById('away-points').innerHTML = score.away.points ;
 }
 
+/**
+* This function displays text on the screen when a courter starts
+* and disables the buttons related to other quarters
+*
+* @param quarter 	the index of the quarter (value ranging 0-3)
+*/
+function displayQuarterStart(quarter) {
+	//display text
+	console.log('diaplyquarter',quarter);
+	switch(quarter) {
+		case 0:
+			document.getElementById('quarter').innerHTML = "1ST"; break;
+		case 1:
+			document.getElementById('quarter').innerHTML = "2ND"; break;
+		case 2:
+			document.getElementById('quarter').innerHTML = "3RD"; break;
+		case 3:
+			document.getElementById('quarter').innerHTML = "4TH"; break;
+	}
 
-
-
-function dohomename()
-{
-	var hn = document.getElementById('homename').value;
-	document.getElementById('home').innerHTML = hn;
+	//disable buttons
+	for(var i=1; i <= 4; i++) {
+		document.getElementById('start-quarter'+i).disabled = true;
+		if(i == quarter+1) {
+			continue;
+		}
+		document.getElementById('stop-quarter'+i).disabled = true;
+	}
 }
-function doawayname()
-{
-	var an = document.getElementById('awayname').value;
-	document.getElementById('away').innerHTML = an;
+
+/**
+* This function displays text on the screen when a courter stops
+* and re-enables the quarter selection buttons
+*
+* @param quarter 	the index of the quarter (value ranging 0-3)
+*/
+function displayQuarterStop(quarter) {
+	//display text
+	switch(quarter) {
+		case 0:
+			document.getElementById('quarter').innerHTML = ("QT"); break;
+		case 1:
+			document.getElementById('quarter').innerHTML = ("HT"); break;
+		case 2:
+			document.getElementById('quarter').innerHTML = ("3Q"); break;
+		case 3:
+			document.getElementById('quarter').innerHTML = ("FT"); break;
+	}
+
+	// enable buttons
+	for(var i=1; i <= 4; i++) {
+		document.getElementById('start-quarter'+i).disabled = false;
+		document.getElementById('stop-quarter'+i).disabled = false;
+	}
 }
 </script>
 </body>
