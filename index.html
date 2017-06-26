@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Darwin AFL Scoring - DTS V5</title>	
+	<title>Darwin AFL Scoring - DTS V6</title>
 	<style>
 		/*import the font to use for the scoring webpage*/
 		@font-face {
@@ -47,14 +47,8 @@
 		#score {
 			line-height:22px;
 			width: 385px; /*width of the background image*/
-			height: 46px; /*height of the background image*/
-			border-collapse: collapse;
 			cursor: default;
-		}
-
-		#score-container {
-			background-image: url('score-background.png');
-			padding-top: 22px; /*make room for the ntfl hashtag*/
+			font-family: 'NewsGoth Cn BT';
 
 			/*position of the scoreboard*/
 			position: absolute;
@@ -62,15 +56,32 @@
 			left: 40px;
 		}
 
-		#score.small {
-			width: 293px; /*width of the background only showing the points*/
+		#score > div {
+			float: left;
+			position: relative;
 		}
 
-		/*all cells in the score table should have no padding and make use of the newgoth font*/
-		#score td {
-			font-family:'NewsGoth Cn BT';
-			padding-top: 0;
-			padding-bottom: 0;
+		.time div {
+			height: 50%;
+		}
+
+		.tag, .time, .number, .team {
+			background-image: url('score-background.png');
+			background-position-y: -21px;
+			height: 47px;
+			padding: 1px;
+		}
+
+		.team, .number {
+			margin-left: 4px;
+		}
+
+		.tag {
+			width: 100%;
+			height: 19px;
+			padding: 0;
+			margin-bottom: 2px;
+			background-position: 0 0;
 		}
 
 		/*font used for displaying the time and qt/ht/3q/ft */
@@ -79,50 +90,68 @@
 			width: 55px; /*width of the first section of the score widget*/
 			text-align: center;
 			font-size: 14pt;
+
+			background-clip: padding-box;
 		}
 
 		/*font used to display the numbers on the score widget*/
 		.number {
 			width: 38px; /* width available for each number on the scoreboard */
-			padding-left: 7px; /*space between the numbers on the scoreboard */
 			font-size: 18pt;
 			text-align: center;
 			font-weight: bold;
+
+			background-position-x: -254px;
+			background-clip: padding-box;
+			transition: transform 240ms ease-out;
+			z-index: -1;
+		}
+
+		.small {
+			transform: translateX(-89px);
 		}
 
 		.points {
 			color: white;
+			background-position-x: -346px;
 		}
 
 		/*font styling used for the team names*/
 		.team {
-			width: 185px; /*the width available for the team name*/
-			padding-left: 10px; /*space to the left of the team names*/
+			width: 182px; /*the width available for the team name*/
 			font-size: 15pt;
 			color: white;
 			font-weight: bold;
+			padding-left: 4px;
+
+			background-position-x: -63px;
 		}
     </style>
 </head>
 <body>
 
-<div id="score-container">
-<table id="score">
-  <tr>
-    <td class="time" align="center" id="quarter"></td>
-    <td class="team" id="home" contenteditable="true">HOME</td>
-    <td class="number" id="home-goals">0</td>
-    <td class="number" id="home-behinds">0</td>
-    <td class="number points" id="home-points">0</td>
-  </tr>
-  <tr>
-    <td class="time" id="clock">00:00</td>
-    <td class="team" id="away" contenteditable="true">AWAY</td>
-    <td class="number" id="away-goals">0</td>
-    <td class="number" id="away-behinds">0</td>
-    <td class="number points" id="away-points">0</td>
-  </tr>
-</table>
+<div id="score">
+	<div class="tag"></div>
+	<div class="time">
+		<div id="quarter"></div>
+		<div id="clock">00:00</div>
+	</div>
+	<div class="team">
+		<div id="home" contenteditable="true">HOME</div>
+		<div id="away" contenteditable="true">AWAY</div>
+	</div>
+	<div class="number">
+		<div id="home-goals">0</div>
+		<div id="away-goals">0</div>
+	</div>
+	<div class="number">
+		<div id="home-behinds">0</div>
+		<div id="away-behinds">0</div>
+	</div>
+	<div class="number points">
+		<div id="home-points">0</div>
+		<div id="away-points">0</div>
+	</div>
 </div>
 
 <img id='logo' src='logo.png' alt='logo' style="display: none;" />
@@ -309,21 +338,14 @@ function decreaseScore(team, type) {
 * This function takes the score values and displays them to the screen
 */
 function displayScore() {
-	if(smallDisplay === true) {
-		document.getElementById('home-goals').style.display = 'none';
-		document.getElementById('home-behinds').style.display = 'none';
-		document.getElementById('away-goals').style.display = 'none';
-		document.getElementById('away-behinds').style.display = 'none';
-		document.getElementById('score-container').style.backgroundImage = "url('score-background-small.png')";
-		document.getElementById('score').className = 'small';
-	} else {
-		document.getElementById('home-goals').style.display = 'table-cell';
-		document.getElementById('home-behinds').style.display = 'table-cell';
-		document.getElementById('away-goals').style.display = 'table-cell';
-		document.getElementById('away-behinds').style.display = 'table-cell';
-		document.getElementById('score-container').style.backgroundImage = "url('score-background.png')";
-		document.getElementById('score').className = '';
-	}
+	const elements = document.getElementsByClassName('number');
+	for (let i = 0; i < elements.length; i++) {
+		if (smallDisplay) {
+			elements[i].classList.add('small');
+		} else {
+			elements[i].classList.remove('small');
+		}
+	};
 
 	//show home team score
 	document.getElementById('home-goals').innerHTML = score.home.goals;
